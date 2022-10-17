@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<title>First Expression Labs</title>
+<link rel="stylesheet" href="index.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Odibee+Sans&display=swap" rel="stylesheet">
+<style>
+
+body {
+  margin: 0;
+  font-family:'Odibee Sans', sans-serif;
+  font-size: 30px;
+  background-color: #000000;
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.content {
+  position: absolute;
+  color: #ffe4c4;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+
+iframe {
+  position: static;
+  right: 0;
+  bottom: 0;
+  min-width: 1080px; 
+  min-height: 1080px;
+  color: #000000;
+  font-size:30px;
+}
+
+  ::-webkit-scrollbar {
+    width: 2em;
+    height: 2px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(29, 0, 63, 0.789);
+    width: 2em;
+    height: 1px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 89, 0, 0.789);
+  border-radius: 1px;
+}
+</style>
+</head>
+
+<body>
+<div class="content">
+    <img src="images/images/2.png" width="auto" height="auto">
+    <h1>Create your avatar</h1>
+    <p>First Expression labs invites you to create your own custom avatar, 
+    <br> To Download the character make an account with ready player me or copy and paste the avatar link into your browser and it will download</p>
+   
+
+    <img src="/images/images/3.png" alt="customize your avatar" width="600px" height="600px">
+    <h2>Customize your avatar</h2>
+    <p>Choose the hair color, eye color, skin tone, clothes, accessories, etc. to make your own unique avatar. <br>
+        With so many options to choose from, you'll be able to create a truly one-of-a-kind avatar that's perfect for you!</p>
+
+    <img src="/images/images/4.png" alt="Share your avatar" width="600px" height="600px">
+        <h3>Share Your Avatar</h3>
+    <p>Post your avatar on social media to show off to friends and family or use it as your profile pic!</p>
+
+    <img src="/images/images/5.png" alt="Join  the first expression labs discord" width="600px" height="600px">
+    <h4>Join The Discord!</h4>
+    <p>Press "1" to Join the First Expression Labs Discord server to learn about the Metaverse & Blockchain!
+    <br> Happy to have you apart of the community!</p>
+    <h4> Can't Wait To See Your Avavtar!</h4>
+    <iframe class="iframe" src="https://firstexpression.readyplayer.me" title="ReadyPlayerMe"></iframe>
+    </div>
+   </body>
+
+
+
+<script>
+    const subdomain = 'firstexpression'; //  custom subdomain
+      const frame = document.getElementById('frame');
+
+      document.getElementById('frame').contentWindow.document.body.style.color='black';
+
+      frame.src = `https://${subdomain}.readyplayer.me/avatar?frameApi`;
+
+      window.addEventListener('message', subscribe);
+      document.addEventListener('message', subscribe);
+
+      function subscribe(event) {
+        const json = parse(event);
+
+        if (json?.source !== 'readyplayerme') {
+          return;
+        }
+
+        // Susbribe to all events sent from Ready Player Me once frame is ready
+        if (json.eventName === 'v1.frame.ready') {
+          frame.contentWindow.postMessage(
+            JSON.stringify({
+              target: 'readyplayerme',
+              type: 'subscribe',
+              eventName: 'v1.**'
+            }),
+            '*'
+          );
+        }
+
+        // Get avatar GLB URL
+        if (json.eventName === 'v1.avatar.exported') {
+          console.log(`Avatar URL: ${json.data.url}`);
+          document.getElementById('avatarUrl').innerHTML = `Avatar URL: ${json.data.url}`;
+          document.getElementById('frame').hidden = true;
+        }
+
+        // Get user id
+        if (json.eventName === 'v1.user.set') {
+          console.log(`User with id ${json.data.id} set: ${JSON.stringify(json)}`);
+        }
+      }
+
+      function parse(event) {
+        try {
+          return JSON.parse(event.data);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function displayIframe() {
+        document.getElementById('frame').hidden = false;
+      }   // display iframe
+
+      var video = document.getElementById("myVideo");
+</script>
+</html>
